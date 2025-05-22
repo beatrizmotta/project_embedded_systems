@@ -7,5 +7,6 @@ project(my_app)
 
 set(ZEPHYR_EXTRA_KCONFIG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/Kconfig)
 
-target_sources(app PRIVATE src/main.c)
+zephyr_include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_sources(app PRIVATE src/main.c src/sensor.c)
 
