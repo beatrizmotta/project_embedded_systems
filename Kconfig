@@ -8,8 +8,13 @@ config RADAR_SENSOR_DISTANCE_MM
     int "Distância entre os sensores dada em milímetros."
     default 2000
 
-config RADAR_LIMIT_SPEED_KMH
+config RADAR_SPEED_LIMIT_KMH
     int "Limite da via em Km por hora."
     default 60
+
+config RADAR_CAMERA_FAILURE_RATE_PERCENT
+    int "Porcentagem de chance da câmera simular uma falha e retornar uma placa inválida."
+    default 0
+    range 0 100
 
 endmenu
