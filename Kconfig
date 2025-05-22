@@ -1,0 +1,15 @@
+mainmenu "Radar Simplificado Configuration"
+
+source "Kconfig.zephyr"
+
+menu "My Project Options"
+
+config RADAR_SENSOR_DISTANCE_MM
+    int "Distância entre os sensores dada em milímetros."
+    default 2000
+
+config RADAR_LIMIT_SPEED_KMH
+    int "Limite da via em Km por hora."
+    default 60
+
+endmenu
