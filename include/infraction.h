@@ -1,5 +1,5 @@
 #define MAX_PLATE_LEN 16
-#define MAX_HASH_LEN 64
+#define MAX_HASH_LEN 62
 #define MAX_TIMESTAMP_LEN 32
 
 struct infraction_data {

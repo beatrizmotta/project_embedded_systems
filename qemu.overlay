@@ -1,20 +1,22 @@
 #include <zephyr/dt-bindings/gpio/gpio.h>
-
 / {
     aliases {
-        sensor1 = &sensor_1;
-        sensor2 = &sensor_2;
+        sensor1 = &gpio0;
+        sensor2 = &gpio0;
     };
 
     sensors {
         compatible = "gpio-keys";
-        sensor_1: sensor_1 {
+        debounce-interval-ms = <10>;
+        sensor1: sensor_1{
             gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
-            label = "SENSOR_1";
         };
-        sensor_2: sensor_2 {
+
+        sensor2: sensor_2{
             gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
-            label = "SENSOR_2";
         };
     };
+    
 };
+
+
