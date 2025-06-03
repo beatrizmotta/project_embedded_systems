@@ -5,7 +5,7 @@
 #include <string.h>
 #include "http_client.h"
 
-#define SERVER_HOST CONFIG_SERVER_HOST  // change to your server IP
+#define SERVER_HOST CONFIG_SERVER_HOST  
 #define SERVER_PORT CONFIG_SERVER_PORT
 #define SERVER_URL CONFIG_SERVER_URL
 
@@ -18,13 +18,10 @@ int send_infraction_notification(const char *plate, int speed, const char *times
     char response_buf[512];
     char json_payload[512];
 
-
-    // Prepare JSON payload
     snprintf(json_payload, sizeof(json_payload),
         "{ \"plate\": \"%s\", \"timestamp\": \"%s\", \"recorded_speed\": %d, \"image_hash\": \"%s\" }",
         plate, timestamp, speed, image_hash);
 
-    // Construct HTTP request
     snprintf(request_buf, sizeof(request_buf),
         "POST %s HTTP/1.1\r\n"
         "Host: %s:%d\r\n"
