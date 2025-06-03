@@ -4,7 +4,6 @@
 #include <time.h>
 #include <string.h>
 
-LOG_MODULE_REGISTER(rtc_simple, LOG_LEVEL_INF);
 
 #define SNTP_SERVER "129.6.15.28"
 
@@ -21,7 +20,6 @@ int get_current_time(struct tm *out_time, int8_t timezone_offset_hours)
     addr.sin_family = AF_INET;
     addr.sin_port = htons(123);  // SNTP port
 
-    // Convert server IP or domain to binary format
     err = inet_pton(AF_INET, SNTP_SERVER, &addr.sin_addr);
     if (err <= 0) {
         printk("Invalid SNTP server address");
@@ -35,7 +33,7 @@ int get_current_time(struct tm *out_time, int8_t timezone_offset_hours)
         return err;
     }
     
-    err = sntp_query(&ctx, 4000, &sntp_time);  // 4-second timeout
+    err = sntp_query(&ctx, 4000, &sntp_time);  
     sntp_close(&ctx);
     
     if (err < 0) {

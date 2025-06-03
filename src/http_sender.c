@@ -1,6 +1,6 @@
-/* http_sender.c */
 #include "camera_capture.h"
 #include "infraction.h" 
+#include "http_client.h"
 #include <zephyr/kernel.h>
 
 void http_sender_thread(void)

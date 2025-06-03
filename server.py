@@ -26,6 +26,7 @@ class Infraction(BaseModel):
         return value
 
 
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     # Extract first error's message (you can customize this logic as needed)

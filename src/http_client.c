@@ -9,8 +9,6 @@
 #define SERVER_PORT CONFIG_SERVER_PORT
 #define SERVER_URL CONFIG_SERVER_URL
 
-
-
 int send_infraction_notification(const char *plate, int speed, const char *timestamp, const char *image_hash) {
     int sock;
     struct sockaddr_in server_addr;
@@ -52,7 +50,9 @@ int send_infraction_notification(const char *plate, int speed, const char *times
     int received = recv(sock, response_buf, sizeof(response_buf) - 1, 0);
     if (received > 0) {
         response_buf[received] = '\0';
+        printk("--------------------\n");
         printk("Server response from notification:\n%s\n", response_buf);
+        printk("--------------------\n");
     } else {
         printk("No response received from server\n");
     }
