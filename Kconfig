@@ -25,6 +25,17 @@ config NET_SAMPLE_SNTP_SERVER_TIMEOUT_MS
     int "Timeout of SNTP server in ms"
     default 5000
 
+config SERVER_HOST
+    string "Cloud server host"
+    default "10.0.2.2"
+    
+config SERVER_PORT
+    int "Cloud server port"
+    default 8000
+config SERVER_URL
+    string "Cloud server url to send infractions"
+    default "/notify-infraction"
+
 
 
 endmenu

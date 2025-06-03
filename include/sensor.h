@@ -13,7 +13,7 @@ struct sensor_event {
     enum sensor_event_type type;
     int speed_kmh;
     bool vehicle_detected;
-    bool speed_exceeded;  // Changed from 'speed_exceeded' to 'speeding'
+    bool speed_exceeded;  
 };
 
 ZBUS_CHAN_DECLARE(sensor_chan);

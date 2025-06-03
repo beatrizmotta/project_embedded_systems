@@ -2,6 +2,7 @@
 #include <time.h>
 #include <zephyr/random/random.h>
 #include "camera_service.h"
+#include "infraction.h"
 #include "sensor.h"
 #include <zephyr/zbus/zbus.h>
 
@@ -17,6 +18,7 @@ ZBUS_CHAN_DEFINE(sensor_chan,
 );
 
 ZBUS_SUBSCRIBER_DEFINE(sensor_consumer, 4);
+K_MSGQ_DEFINE(infraction_msgq, sizeof(struct infraction_data), 4, 4);
 
 
 int should_call_camera() {
@@ -27,6 +29,18 @@ int should_call_camera() {
         }
     }
     return 1; 
+}
+
+int send_infraction(const char *plate, int speed_kmh, const char *timestamp, const char *image_hash) {
+
+    struct infraction_data data = {
+        .speed_record = speed_kmh
+    };
+    strncpy(data.plate, plate, MAX_PLATE_LEN);
+    strncpy(data.timestamp, timestamp, MAX_TIMESTAMP_LEN);
+    strncpy(data.image_hash, image_hash, MAX_HASH_LEN);
+
+    return k_msgq_put(&infraction_msgq, &data, K_NO_WAIT);
 }
 
 
@@ -67,11 +81,22 @@ void camera_capture_thread(void *, void *, void *) {
                 case MSG_CAMERA_EVT_TYPE_DATA:
                     if (is_valid_plate(cam_evt.captured_data->plate)) {
                         get_current_time(&current_time, 0);
+
+                        const char *plate = cam_evt.captured_data->plate;
+                        const char *hash = cam_evt.captured_data->hash;
                         printk("Valid plate captured: %s at %02d:%02d:%02d\n",
                                cam_evt.captured_data->plate,
                                current_time.tm_hour,
                                current_time.tm_min,
                                current_time.tm_sec);
+                        
+                               
+                        int err = send_infraction(plate, sensor_evt.speed_kmh,"14:35:21 03/06/2025", hash);
+                        if (err != 0) {
+                            printk("There was an error sending the infraction.\n");
+                        }
+
+
                     } else {
                         printk("Invalid plate captured: %s at %02d:%02d:%02d\n", 
                             cam_evt.captured_data->plate,
