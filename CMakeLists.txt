@@ -16,5 +16,6 @@ zephyr_include_directories(
 target_sources(app PRIVATE 
     src/main.c 
     src/sensor.c 
+    src/ntp.c
     camera_service/src/camera_service.c)
 

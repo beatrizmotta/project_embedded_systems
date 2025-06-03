@@ -17,4 +17,14 @@ config RADAR_CAMERA_FAILURE_RATE_PERCENT
     default 0
     range 0 100
 
+config NET_SAMPLE_SNTP_SERVER_PORT
+    int "Port of SNPT server"
+    default 123 
+
+config NET_SAMPLE_SNTP_SERVER_TIMEOUT_MS
+    int "Timeout of SNTP server in ms"
+    default 5000
+
+
+
 endmenu
