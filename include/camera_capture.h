@@ -1,0 +1,1 @@
+void camera_capture_thread(void *, void *, void *);

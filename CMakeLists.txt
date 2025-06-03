@@ -17,5 +17,6 @@ target_sources(app PRIVATE
     src/main.c 
     src/sensor.c 
     src/ntp.c
+    src/camera_capture.c
     camera_service/src/camera_service.c)
 
