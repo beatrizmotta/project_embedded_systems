@@ -1,7 +1,12 @@
 #include <zephyr/kernel.h>
 #include "sensor.h"
+#include "ntp.h"
+#include <time.h>
 #include <zephyr/random/random.h>
 #include "camera_service.h"
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
 ZBUS_MSG_SUBSCRIBER_DEFINE(msub_camera_evt);
 
@@ -67,6 +72,7 @@ int is_valid_plate(const char *plate) {
 void camera_capture_thread(void *, void *, void *) {
     const struct zbus_channel *chan;
     struct msg_camera_evt evt;
+    struct tm current_time;
 
     int err;
 
@@ -90,6 +96,19 @@ void camera_capture_thread(void *, void *, void *) {
                 const char *plate = evt.captured_data->plate;
                 bool plate_validity = is_valid_plate(plate);
                 printk("Camera captured data: %s\n", plate);
+
+                int err = get_current_time(&current_time, 0);  // timezone offset = 0
+
+                if (err == 0) {
+                    printk("%d ano %d mes %d day %d hour %d min %d second\n", current_time.tm_year + 1900, current_time.tm_mon + 1,
+                    current_time.tm_mday, current_time.tm_hour, current_time.tm_min, current_time.tm_sec);
+                    LOG_INF("Time: %04d-%02d-%02d %02d:%02d:%02d (UTC)",
+                        current_time.tm_year + 1900, current_time.tm_mon + 1, current_time.tm_mday,
+                        current_time.tm_hour, current_time.tm_min, current_time.tm_sec);
+                } 
+
+
+
                 break;
             case MSG_CAMERA_EVT_TYPE_ERROR:
                 printk("Camera error: %d\n", evt.error_code);
@@ -100,7 +119,7 @@ void camera_capture_thread(void *, void *, void *) {
         }
     }
 
-    k_msleep(3000);
+    k_msleep(5000);
 
 
 
