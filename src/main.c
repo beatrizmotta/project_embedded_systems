@@ -1,131 +1,22 @@
 #include <zephyr/kernel.h>
 #include "sensor.h"
-#include "ntp.h"
-#include <time.h>
-#include <zephyr/random/random.h>
-#include "camera_service.h"
-#include <zephyr/logging/log.h>
+#include "camera_capture.h"
 
-LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
-
-ZBUS_MSG_SUBSCRIBER_DEFINE(msub_camera_evt);
 
 int main(void) {
     printk("Hello from Bia e Fred!\n");
+
+
     return 0; 
 }
 
+
 void main_thread(void *, void *, void *) {
     while (1) {
-        // printk("Main thread running");
         k_msleep(1000);
     }
 }
 
-int call_camera() {
-
-    int random_key = sys_rand16_get() % 50;
-
-    if (random_key % 2 == 0) {
-        return 1; 
-    }
-
-    return 0;
-
-}
-
-
-
-void sensor_thread(void *, void *, void *) {
-
-    
-}
-
-int is_valid_plate(const char *plate) {
-    int letter_counter = 0; 
-    int number_counter = 0; 
-    for (int i = 0; plate[i] != '\0'; i++) {
-
-        if (plate[i] == ' ') {
-            continue; 
-        } 
-
-        if (plate[i] >= 48 && plate[i] <= 57) {
-            number_counter++;
-            continue;
-        } 
-        
-        if (plate[i] >= 65 && plate[i] <= 90) {
-            letter_counter++;
-            continue;
-        }
-    }
-
-    if (letter_counter == 4 && number_counter == 3) {
-        return 1; 
-    } 
-
-    return 0; 
-
-}
-
-void camera_capture_thread(void *, void *, void *) {
-    const struct zbus_channel *chan;
-    struct msg_camera_evt evt;
-    struct tm current_time;
-
-    int err;
-
-    while (1) {
-
-        err = camera_api_capture(K_MSEC(100));
-    
-        if (err) {
-            printk("Error code %d in %s (line:%d)\n", err, __FUNCTION__, __LINE__);
-            continue;
-        } 
-    
-        err = zbus_sub_wait_msg(&msub_camera_evt, &chan, &evt, K_FOREVER);
-        if (err) {
-            printk("Error code %d in %s (line:%d)\n", err, __FUNCTION__, __LINE__);
-            continue;
-        } 
-    
-        switch (evt.type) {
-            case MSG_CAMERA_EVT_TYPE_DATA:
-                const char *plate = evt.captured_data->plate;
-                bool plate_validity = is_valid_plate(plate);
-                printk("Camera captured data: %s\n", plate);
-
-                int err = get_current_time(&current_time, 0);  // timezone offset = 0
-
-                if (err == 0) {
-                    printk("%d ano %d mes %d day %d hour %d min %d second\n", current_time.tm_year + 1900, current_time.tm_mon + 1,
-                    current_time.tm_mday, current_time.tm_hour, current_time.tm_min, current_time.tm_sec);
-                    LOG_INF("Time: %04d-%02d-%02d %02d:%02d:%02d (UTC)",
-                        current_time.tm_year + 1900, current_time.tm_mon + 1, current_time.tm_mday,
-                        current_time.tm_hour, current_time.tm_min, current_time.tm_sec);
-                } 
-
-
-
-                break;
-            case MSG_CAMERA_EVT_TYPE_ERROR:
-                printk("Camera error: %d\n", evt.error_code);
-                break;
-            default:
-                printk("Unknown camera event type: %d\n", evt.type);
-                break;
-        }
-    }
-
-    k_msleep(5000);
-
-
-
-
-
-}
 
 
 void display_thread(void *, void *, void *) {

@@ -1,2 +1,23 @@
-int calc_velocity_kmh(uint32_t time_microsseconds, uint32_t distance_millimeters);
-bool detect_infraction(int velocity_kmh);
+#ifndef SENSOR_H
+#define SENSOR_H
+
+#include <zephyr/kernel.h>
+#include <zephyr/zbus/zbus.h>
+
+enum sensor_event_type {
+    SENSOR_EVENT_VEHICLE_DETECTED,
+    SENSOR_EVENT_SPEED_CALCULATED
+};
+
+struct sensor_event {
+    enum sensor_event_type type;
+    int speed_kmh;
+    bool vehicle_detected;
+    bool speed_exceeded;  // Changed from 'speed_exceeded' to 'speeding'
+};
+
+ZBUS_CHAN_DECLARE(sensor_chan);
+
+void sensor_thread(void *, void *, void *);
+
+#endif /* SENSOR_H */

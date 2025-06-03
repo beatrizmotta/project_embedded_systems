@@ -24,14 +24,14 @@ int get_current_time(struct tm *out_time, int8_t timezone_offset_hours)
     // Convert server IP or domain to binary format
     err = inet_pton(AF_INET, SNTP_SERVER, &addr.sin_addr);
     if (err <= 0) {
-        LOG_ERR("Invalid SNTP server address");
+        printk("Invalid SNTP server address");
         return -EINVAL;
     }
 
     
     err = sntp_init(&ctx, (struct sockaddr *)&addr, sizeof(addr));
     if (err < 0) {
-        LOG_ERR("SNTP init failed: %d", err);
+        printk("SNTP init failed: %d", err);
         return err;
     }
     
@@ -39,13 +39,13 @@ int get_current_time(struct tm *out_time, int8_t timezone_offset_hours)
     sntp_close(&ctx);
     
     if (err < 0) {
-        LOG_ERR("SNTP query failed: %d", err);
+        printk("SNTP query failed: %d", err);
         return err;
     }
     
     time_t unix_time = sntp_time.seconds + (timezone_offset_hours * 3600);
     if (gmtime_r(&unix_time, out_time) == NULL) {
-        LOG_ERR("Failed to convert to UTC time");
+        printk("Failed to convert to UTC time");
         return -EIO;
     }
     
